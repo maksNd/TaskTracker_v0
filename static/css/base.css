@@ -1,0 +1,165 @@
+:root {
+    --primary-color: #4CAF50;
+    --primary-hover: #45a049;
+    --text-color: #333;
+    --text-light: #666;
+    --bg-color: #f4f4f4;
+    --white: #fff;
+    --border-color: #ddd;
+    --shadow: 0 2px 5px rgba(0,0,0,0.1);
+    --spacing: 20px;
+    --radius: 4px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding-top: 120px;
+    padding-bottom: 60px;
+}
+
+/* Кастомизация Bootstrap */
+.btn {
+    padding: 6px 12px;
+    font-size: 14px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.btn-outline-primary {
+    color: var(--text-color);
+    border-color: var(--border-color);
+    background-color: var(--border-color);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--white);
+}
+
+.navbar {
+    box-shadow: var(--shadow);
+    padding: var(--spacing);
+}
+
+.navbar.fixed-top {
+    background-color: var(--white) !important;
+}
+
+.navbar.fixed-bottom {
+    background-color: var(--white) !important;
+    border-top: 1px solid var(--border-color);
+}
+
+.navbar-brand {
+    font-weight: 500;
+}
+
+/* Утилиты */
+.task-card {
+    background-color: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 8px;
+    padding: 12px;
+}
+
+.task-meta {
+    color: var(--text-light);
+    font-size: 13px;
+}
+
+.card {
+    border: none;
+    box-shadow: var(--shadow);
+    border-radius: var(--radius);
+}
+
+/* Формы */
+.form-control {
+    height: 32px;
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 6px 12px;
+    width: 100%;
+    display: block;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: none;
+}
+
+.form-label {
+    font-size: 14px;
+    color: var(--text-color);
+    margin-bottom: 4px;
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.alert {
+    padding: 12px;
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    font-size: 14px;
+    border: none;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Страницы входа и регистрации */
+.card-title {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.card-body {
+    padding: var(--spacing);
+}
+
+.mb-3 {
+    margin-bottom: 16px !important;
+}
+
+.mb-4 {
+    margin-bottom: 24px !important;
+} 

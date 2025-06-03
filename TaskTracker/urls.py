@@ -26,4 +26,6 @@ urlpatterns = [
     path('register/success/', views.register_success, name='register_success'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    path('task/create/', views.create_task, name='create_task'),
+    path('task/<int:task_id>/complete/', views.complete_task, name='complete_task'),
 ]
