@@ -24,8 +24,9 @@ urlpatterns = [
     path('', views.test_page, name='test_page'),
     path('register/', views.register, name='register'),
     path('register/success/', views.register_success, name='register_success'),
-    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
-    path('task/create/', views.create_task, name='create_task'),
-    path('task/<int:task_id>/complete/', views.complete_task, name='complete_task'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('create-task/', views.create_task, name='create_task'),
+    path('complete-task/<int:task_id>/', views.complete_task, name='complete_task'),
+    path('complete-tasks/', views.complete_tasks, name='complete_tasks'),
 ]

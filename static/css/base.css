@@ -1,165 +1,356 @@
+/* Определение корневых CSS переменных для всего приложения */
 :root {
-    --primary-color: #4CAF50;
-    --primary-hover: #45a049;
-    --text-color: #333;
-    --text-light: #666;
-    --bg-color: #f4f4f4;
-    --white: #fff;
-    --border-color: #ddd;
-    --shadow: 0 2px 5px rgba(0,0,0,0.1);
-    --spacing: 20px;
-    --radius: 4px;
+    /* Основные цвета приложения */
+    --primary-color: #4CAF50;      /* Основной зеленый цвет для кнопок и акцентов */
+    --primary-hover: #45a049;      /* Цвет при наведении на основной элемент */
+    --secondary-color: #6c757d;    /* Вторичный серый цвет для второстепенных элементов */
+    --success-color: #28a745;      /* Зеленый цвет для успешных действий */
+    --danger-color: #dc3545;       /* Красный цвет для ошибок и опасных действий */
+    --warning-color: #ffc107;      /* Желтый цвет для предупреждений */
+    --info-color: #17a2b8;         /* Голубой цвет для информационных сообщений */
+    
+    /* Цветовая схема для текста */
+    --text-color: #333;            /* Основной цвет текста - темно-серый */
+    --text-light: #666;            /* Светлый вариант текста - серый */
+    --text-muted: #6c757d;         /* Приглушенный текст - светло-серый */
+    
+    /* Цвета фона */
+    --bg-color: #f8f9fa;           /* Основной цвет фона страницы - светло-серый */
+    --bg-white: #ffffff;           /* Белый цвет фона для карточек и панелей */
+    
+    /* Стили границ и теней */
+    --border-color: #dee2e6;       /* Цвет границ элементов - светло-серый */
+    --border-radius: 0.375rem;     /* Стандартное скругление углов - 6px */
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);  /* Легкая тень для карточек */
+    --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);           /* Усиленная тень для эффектов */
+    
+    /* Система отступов */
+    --spacing-xs: 0.25rem;         /* Минимальный отступ - 4px */
+    --spacing-sm: 0.5rem;          /* Маленький отступ - 8px */
+    --spacing-md: 1rem;            /* Средний отступ - 16px */
+    --spacing-lg: 1.5rem;          /* Большой отступ - 24px */
+    --spacing-xl: 2rem;            /* Максимальный отступ - 32px */
 }
 
+/* Базовые стили для всей страницы */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    line-height: 1.5;
-    min-height: 100vh;
-    padding-top: 120px;
-    padding-bottom: 60px;
+    /* Системный шрифт для лучшей читаемости на разных устройствах */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-color);    /* Установка цвета фона */
+    color: var(--text-color);             /* Установка цвета текста */
+    line-height: 1.5;                     /* Межстрочный интервал */
+    min-height: 100vh;                    /* Минимальная высота на весь экран */
+    padding-top: 4.5rem;                  /* Отступ сверху для фиксированной навигации */
+    padding-bottom: 4.5rem;               /* Отступ снизу для фиксированного футера */
 }
 
-/* Кастомизация Bootstrap */
+/* Стили навигационной панели */
+.navbar {
+    padding: var(--spacing-md) 0;         /* Внутренние отступы сверху и снизу */
+    transition: box-shadow 0.3s ease;     /* Плавная анимация тени */
+}
+
+/* Стили для фиксированных навигационных панелей */
+.navbar.fixed-top,
+.navbar.fixed-bottom {
+    background-color: var(--bg-white) !important;  /* Белый фон */
+    border-bottom: 1px solid var(--border-color);  /* Нижняя граница */
+}
+
+/* Специфичные стили для нижней навигации */
+.navbar.fixed-bottom {
+    border-top: 1px solid var(--border-color);     /* Верхняя граница */
+    border-bottom: none;                           /* Убираем нижнюю границу */
+}
+
+/* Стили для ссылок в навигации */
+.nav-link {
+    color: var(--text-muted);                      /* Цвет текста */
+    transition: color 0.2s ease-in-out;            /* Плавное изменение цвета */
+    padding: var(--spacing-sm) var(--spacing-md);  /* Внутренние отступы */
+    font-size: 0.875rem;                           /* Размер шрифта */
+    font-weight: normal;                           /* Нормальное начертание */
+}
+
+/* Эффект при наведении на ссылку */
+.nav-link:hover {
+    color: var(--primary-color);                   /* Изменение цвета при наведении */
+}
+
+/* Стили для кнопок-ссылок */
+.btn-link {
+    font-size: 0.875rem;                           /* Размер шрифта */
+    font-weight: normal;                           /* Нормальное начертание */
+    color: var(--text-muted);                      /* Цвет текста */
+    text-decoration: none;                         /* Убираем подчеркивание */
+    transition: color 0.2s ease-in-out;            /* Плавное изменение цвета */
+    padding: 0;                                    /* Убираем внутренние отступы */
+}
+
+/* Эффект при наведении на кнопку-ссылку */
+.btn-link:hover {
+    color: var(--primary-color);                   /* Изменение цвета при наведении */
+}
+
+/* Стили для приглушенного текста */
+.text-muted {
+    font-size: 0.875rem;                           /* Размер шрифта */
+    font-weight: normal;                           /* Нормальное начертание */
+}
+
+/* Базовые стили для всех кнопок */
 .btn {
-    padding: 6px 12px;
-    font-size: 14px;
-    height: 32px;
+    padding: 0.5rem 1rem;                          /* Внутренние отступы */
+    font-size: 0.875rem;                           /* Размер шрифта */
+    line-height: 1.5;                              /* Межстрочный интервал */
+    border-radius: var(--border-radius);           /* Скругление углов */
+    transition: all 0.2s ease-in-out;              /* Плавная анимация всех свойств */
+    display: inline-flex;                          /* Флекс-контейнер */
+    align-items: center;                           /* Выравнивание по центру */
+    justify-content: center;                       /* Выравнивание по центру */
+    min-width: 120px;                              /* Минимальная ширина */
+}
+
+/* Стили основной кнопки */
+.btn-primary {
+    background-color: var(--primary-color);        /* Цвет фона */
+    border-color: var(--primary-color);            /* Цвет границы */
+}
+
+/* Эффект при наведении на основную кнопку */
+.btn-primary:hover {
+    background-color: var(--primary-hover);        /* Цвет фона при наведении */
+    border-color: var(--primary-hover);            /* Цвет границы при наведении */
+}
+
+/* Стили контурной кнопки */
+.btn-outline-primary {
+    color: var(--text-color);                      /* Цвет текста */
+    border-color: var(--border-color);             /* Цвет границы */
+    background-color: transparent;                 /* Прозрачный фон */
+}
+
+/* Эффект при наведении на контурную кнопку */
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);        /* Цвет фона при наведении */
+    border-color: var(--primary-color);            /* Цвет границы при наведении */
+    color: var(--bg-white);                        /* Цвет текста при наведении */
+}
+
+/* Стили карточек */
+.card {
+    border: none;                                  /* Убираем стандартную границу */
+    border-radius: var(--border-radius);           /* Скругление углов */
+    box-shadow: var(--shadow-sm);                  /* Легкая тень */
+    transition: box-shadow 0.3s ease;              /* Плавная анимация тени */
+}
+
+/* Эффект при наведении на карточку */
+.card:hover {
+    box-shadow: var(--shadow);                     /* Усиленная тень при наведении */
+}
+
+/* Стили заголовка карточки */
+.card-title {
+    font-size: 1.25rem;                            /* Размер шрифта */
+    font-weight: 500;                              /* Полужирное начертание */
+    margin-bottom: var(--spacing-md);              /* Отступ снизу */
+}
+
+/* Стили содержимого карточки */
+.card-body {
+    padding: var(--spacing-lg);                    /* Внутренние отступы */
+}
+
+/* Стили полей ввода */
+.form-control {
+    height: 2.5rem;                                /* Высота поля */
+    padding: 0.5rem 0.75rem;                       /* Внутренние отступы */
+    font-size: 0.875rem;                           /* Размер шрифта */
+    border: 1px solid var(--border-color);         /* Граница */
+    border-radius: var(--border-radius);           /* Скругление углов */
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;  /* Анимация */
+}
+
+/* Стили при фокусе на поле ввода */
+.form-control:focus {
+    border-color: var(--primary-color);            /* Цвет границы при фокусе */
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);  /* Тень при фокусе */
+}
+
+/* Стили меток полей ввода */
+.form-label {
+    font-size: 0.875rem;                           /* Размер шрифта */
+    font-weight: 500;                              /* Полужирное начертание */
+    margin-bottom: var(--spacing-xs);              /* Отступ снизу */
+    color: var(--text-color);                      /* Цвет текста */
+}
+
+/* Стили группы полей ввода */
+.form-group {
+    margin-bottom: var(--spacing-md);              /* Отступ снизу */
+}
+
+/* Стили сообщений об ошибках */
+.form-error {
+    color: var(--danger-color);                    /* Цвет текста */
+    font-size: 0.75rem;                            /* Размер шрифта */
+    margin-top: var(--spacing-xs);                 /* Отступ сверху */
+}
+
+/* Базовые стили уведомлений */
+.alert {
+    padding: var(--spacing-md);                    /* Внутренние отступы */
+    border-radius: var(--border-radius);           /* Скругление углов */
+    margin-bottom: var(--spacing-md);              /* Отступ снизу */
+    border: none;                                  /* Убираем границу */
+    font-size: 0.875rem;                           /* Размер шрифта */
+}
+
+/* Стили успешного уведомления */
+.alert-success {
+    background-color: #d4edda;                     /* Цвет фона */
+    color: #155724;                                /* Цвет текста */
+}
+
+/* Стили уведомления об ошибке */
+.alert-danger {
+    background-color: #f8d7da;                     /* Цвет фона */
+    color: #721c24;                                /* Цвет текста */
+}
+
+/* Стили карточки задачи */
+.task-card {
+    background-color: var(--bg-white);             /* Цвет фона */
+    border-radius: var(--border-radius);           /* Скругление углов */
+    box-shadow: var(--shadow-sm);                  /* Легкая тень */
+    margin-bottom: var(--spacing-sm);              /* Отступ снизу */
+    padding: var(--spacing-md);                    /* Внутренние отступы */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;  /* Анимация */
+}
+
+/* Эффект при наведении на карточку задачи */
+.task-card:hover {
+    transform: translateY(-2px);                    /* Смещение вверх */
+    box-shadow: var(--shadow);                     /* Усиленная тень */
+}
+
+/* Стили заголовка задачи */
+.task-card h5 {
+    font-weight: normal;                           /* Нормальное начертание */
+    font-size: 1rem;                               /* Размер шрифта */
+    margin-bottom: var(--spacing-xs);              /* Отступ снизу */
+}
+
+/* Стили метаданных задачи */
+.task-meta {
+    color: var(--text-muted);                      /* Цвет текста */
+    font-size: 0.75rem;                            /* Размер шрифта */
+}
+
+/* Утилита для легкой тени */
+.shadow-sm {
+    box-shadow: var(--shadow-sm) !important;       /* Принудительное применение тени */
+}
+
+/* Утилита для усиленной тени */
+.shadow {
+    box-shadow: var(--shadow) !important;          /* Принудительное применение тени */
+}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 768px) {
+    body {
+        padding-top: 4rem;                         /* Уменьшенный отступ сверху */
+        padding-bottom: 4rem;                      /* Уменьшенный отступ снизу */
+    }
+    
+    .navbar {
+        padding: var(--spacing-sm) 0;              /* Уменьшенные отступы навигации */
+    }
+    
+    .card-body {
+        padding: var(--spacing-md);                /* Уменьшенные отступы карточек */
+    }
+}
+
+/* Стили для страниц входа и регистрации */
+.card-title {
+    font-size: 24px;                               /* Размер заголовка */
+    font-weight: 500;                              /* Полужирное начертание */
+    color: var(--text-color);                      /* Цвет текста */
+}
+
+/* Стили содержимого карточки */
+.card-body {
+    padding: var(--spacing-lg);                    /* Внутренние отступы */
+}
+
+/* Утилита для отступа снизу */
+.mb-3 {
+    margin-bottom: 16px !important;                /* Отступ снизу 16px */
+}
+
+/* Утилита для большого отступа снизу */
+.mb-4 {
+    margin-bottom: 24px !important;                /* Отступ снизу 24px */
+}
+
+/* Стили футера */
+footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Стили для правой части футера */
+.footer-right {
     display: flex;
     align-items: center;
-    justify-content: center;
-    min-width: 120px;
-    transition: background-color 0.2s;
+    gap: 1rem;
 }
 
-.btn-primary {
+/* Стили для левой части футера */
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Стили для чекбокса задачи */
+.task-checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    border: 2px solid var(--border-color);
+    border-radius: 0.25rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.task-checkbox:checked {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
 }
 
-.btn-primary:hover {
+/* Стили для кнопки подтверждения выполнения */
+.btn-confirm {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    border: none;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.btn-confirm:hover {
     background-color: var(--primary-hover);
-    border-color: var(--primary-hover);
 }
 
-.btn-outline-primary {
-    color: var(--text-color);
-    border-color: var(--border-color);
-    background-color: var(--border-color);
-}
-
-.btn-outline-primary:hover,
-.btn-outline-primary.active {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    color: var(--white);
-}
-
-.navbar {
-    box-shadow: var(--shadow);
-    padding: var(--spacing);
-}
-
-.navbar.fixed-top {
-    background-color: var(--white) !important;
-}
-
-.navbar.fixed-bottom {
-    background-color: var(--white) !important;
-    border-top: 1px solid var(--border-color);
-}
-
-.navbar-brand {
-    font-weight: 500;
-}
-
-/* Утилиты */
-.task-card {
-    background-color: var(--white);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    margin-bottom: 8px;
-    padding: 12px;
-}
-
-.task-meta {
-    color: var(--text-light);
-    font-size: 13px;
-}
-
-.card {
-    border: none;
-    box-shadow: var(--shadow);
-    border-radius: var(--radius);
-}
-
-/* Формы */
-.form-control {
-    height: 32px;
-    font-size: 14px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 6px 12px;
-    width: 100%;
-    display: block;
-}
-
-.form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: none;
-}
-
-.form-label {
-    font-size: 14px;
-    color: var(--text-color);
-    margin-bottom: 4px;
-    display: block;
-}
-
-.form-group {
-    margin-bottom: 16px;
-}
-
-.form-error {
-    color: #dc3545;
-    font-size: 12px;
-    margin-top: 4px;
-}
-
-.alert {
-    padding: 12px;
-    border-radius: var(--radius);
-    margin-bottom: 12px;
-    font-size: 14px;
-    border: none;
-}
-
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-/* Страницы входа и регистрации */
-.card-title {
-    font-size: 24px;
-    font-weight: 500;
-    color: var(--text-color);
-}
-
-.card-body {
-    padding: var(--spacing);
-}
-
-.mb-3 {
-    margin-bottom: 16px !important;
-}
-
-.mb-4 {
-    margin-bottom: 24px !important;
+.btn-confirm:disabled {
+    background-color: var(--secondary-color);
+    cursor: not-allowed;
 } 

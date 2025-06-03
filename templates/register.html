@@ -6,33 +6,51 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-4">
-        <div class="card">
+        <div class="card shadow-sm">
             <div class="card-body">
                 <h1 class="card-title text-center mb-4">Регистрация</h1>
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
                 
                 <form method="POST">
                     {% csrf_token %}
                     
-                    <div class="mb-3">
+                    <div class="form-group mb-3">
                         <label for="id_username" class="form-label">Имя пользователя:</label>
                         {{ form.username }}
-                        {{ form.username.errors }}
+                        {% if form.username.errors %}
+                            <div class="form-error">{{ form.username.errors.0 }}</div>
+                        {% endif %}
                     </div>
                     
-                    <div class="mb-3">
+                    <div class="form-group mb-3">
                         <label for="id_password1" class="form-label">Пароль:</label>
                         {{ form.password1 }}
-                        {{ form.password1.errors }}
+                        {% if form.password1.errors %}
+                            <div class="form-error">{{ form.password1.errors.0 }}</div>
+                        {% endif %}
                     </div>
                     
-                    <div class="mb-3">
+                    <div class="form-group mb-4">
                         <label for="id_password2" class="form-label">Подтверждение пароля:</label>
                         {{ form.password2 }}
-                        {{ form.password2.errors }}
+                        {% if form.password2.errors %}
+                            <div class="form-error">{{ form.password2.errors.0 }}</div>
+                        {% endif %}
                     </div>
                     
                     <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
                 </form>
+                
+                <div class="text-center mt-4">
+                    <p class="mb-0">Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+                </div>
             </div>
         </div>
     </div>

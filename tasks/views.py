@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from datetime import datetime
-from .forms import UserRegisterForm, TaskForm
+from .forms import UserRegisterForm, TaskForm, LoginForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, logout, authenticate
 from .models import Task
+import json
+from django.utils import timezone
+from django.views.decorators.http import require_http_methods
 
 # Главная страница
 def test_page(request):
@@ -48,14 +52,38 @@ def complete_task(request, task_id):
         messages.error(request, 'Задача не найдена!')
     return redirect('test_page')
 
+@require_http_methods(["POST"])
+@login_required
+def complete_tasks(request):
+    try:
+        data = json.loads(request.body)
+        task_ids = data.get('task_ids', [])
+        
+        if not task_ids:
+            return JsonResponse({'success': False, 'error': 'Не выбраны задачи'})
+            
+        # Обновляем статус выбранных задач
+        Task.objects.filter(
+            id__in=task_ids,
+            status='pending'
+        ).update(
+            status='completed',
+            completed_at=timezone.now()
+        )
+        
+        return JsonResponse({'success': True})
+        
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'Неверный формат данных'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
 # Регистрация пользователей
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Аккаунт создан для пользователя {username}!')
             return redirect('register_success')
     else:
         form = UserRegisterForm()
@@ -63,4 +91,24 @@ def register(request):
 
 # Успешная регистрация
 def register_success(request):
-    return render(request, 'register_success.html') 
+    return render(request, 'register_success.html')
+
+# Представление для входа
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('test_page')
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
+
+# Представление для выхода
+def logout_view(request):
+    logout(request)
+    return redirect('test_page') 

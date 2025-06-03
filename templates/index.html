@@ -22,32 +22,109 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="task-list">
-            {% for task in tasks %}
-            <div class="task-card">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="flex-grow-1 me-3">
-                        <h5 class="mb-1 text-truncate">{{ task.title }}</h5>
-                        <div class="task-meta text-truncate">
-                            {{ task.created_at|date:"d.m.Y H:i" }} • {{ task.created_by.username }}
-                        </div>
+<div class="container">
+    <div class="row">
+        {% for task in tasks %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="task-card">
+                    <div class="d-flex align-items-center">
+                        <input type="checkbox" class="task-checkbox" data-task-id="{{ task.id }}" 
+                               {% if task.status == 'completed' %}checked{% endif %}
+                               {% if task.status == 'completed' %}disabled{% endif %}>
+                        <h5 class="{% if task.status == 'completed' %}text-muted text-decoration-line-through{% endif %}">
+                            {{ task.title }}
+                        </h5>
                     </div>
-                    {% if user.is_authenticated and task.status == 'pending' %}
-                    <form method="POST" action="{% url 'complete_task' task.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-success">Выполнено</button>
-                    </form>
-                    {% endif %}
+                    <div class="task-meta">
+                        <small>Создано: {{ task.created_at|date:"d.m.Y H:i" }}</small>
+                        {% if task.status == 'completed' %}
+                            <br>
+                            <small class="text-success">Выполнено: {{ task.completed_at|date:"d.m.Y H:i" }}</small>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-            {% empty %}
-            <div class="text-center text-muted py-4">
-                <p class="mb-0">Нет задач</p>
+        {% empty %}
+            <div class="col-12">
+                <p>Нет доступных задач.</p>
             </div>
-            {% endfor %}
-        </div>
+        {% endfor %}
     </div>
 </div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.task-checkbox:not([disabled])');
+    const confirmButton = document.getElementById('confirmTasks');
+    
+    // Функция обновления состояния кнопки подтверждения
+    function updateConfirmButton() {
+        const checkedTasks = document.querySelectorAll('.task-checkbox:checked:not([disabled])');
+        confirmButton.disabled = checkedTasks.length === 0;
+    }
+    
+    // Обработчик изменения состояния чекбоксов
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateConfirmButton);
+    });
+    
+    // Обработчик нажатия на кнопку подтверждения
+    confirmButton.addEventListener('click', function() {
+        const checkedTasks = Array.from(document.querySelectorAll('.task-checkbox:checked:not([disabled])'))
+            .map(checkbox => checkbox.dataset.taskId);
+            
+        if (checkedTasks.length > 0) {
+            // Показываем индикатор загрузки
+            confirmButton.disabled = true;
+            confirmButton.innerHTML = 'Подождите...';
+            
+            fetch('{% url "complete_tasks" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({
+                    task_ids: checkedTasks
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error('Ошибка доступа: у вас нет необходимых прав');
+                    } else if (response.status === 404) {
+                        throw new Error('Задача не найдена или была удалена');
+                    } else if (response.status >= 500) {
+                        throw new Error('Внутренняя ошибка сервера. Пожалуйста, попробуйте позже.');
+                    } else {
+                        throw new Error('Ошибка сети при обновлении задач');
+                    }
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert(data.error || 'Произошла ошибка при обновлении задач');
+                    confirmButton.disabled = false;
+                    confirmButton.innerHTML = 'Подтвердить выполнение';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (error.name === 'NetworkError' || error.name === 'TypeError') {
+                    alert('Ошибка сети. Пожалуйста, проверьте подключение к интернету.');
+                } else {
+                    alert(error.message || 'Произошла ошибка при обновлении задач. Пожалуйста, попробуйте еще раз.');
+                }
+                confirmButton.disabled = false;
+                confirmButton.innerHTML = 'Подтвердить выполнение';
+            });
+        }
+    });
+});
+</script>
+{% endblock %}
 {% endblock %} 
