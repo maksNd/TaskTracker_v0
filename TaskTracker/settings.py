@@ -77,19 +77,12 @@ WSGI_APPLICATION = 'TaskTracker.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': os.environ.get('DB_NAME', 'tt_v0'),
-        # 'USER': os.environ.get('DB_USER', 'user'),
-        # 'PASSWORD': os.environ.get('DB_PASSWORD', 'user'),
-        # 'HOST': os.environ.get('DB_HOST', 'db'),
-        # 'PORT': os.environ.get('DB_PORT', '5432'),
-
-        'ENGINE': os.environ.get('POSTGRES_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.environ.get('POSTGRES_DB', str(BASE_DIR / 'db.sqlite3')),
-        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
-        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
-        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME', 'tt_v0'),
+        'USER': os.environ.get('DB_USER', 'user'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'user'),
+        'HOST': os.environ.get('DB_HOST', 'db'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -136,6 +129,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-CSRF_TRUSTED_ORIGINS = ['http://193.187.174.69:8080']
+CSRF_TRUSTED_ORIGINS = [
+    'http://193.187.174.69:8080',
+    'http://localhost:8080'
+]
 CSRF_COOKIE_SECURE = False  # для разработки
 SESSION_COOKIE_SECURE = False  # для разработки
