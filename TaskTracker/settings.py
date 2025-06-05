@@ -27,6 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-))0$$=qg6w)+ai(n_8tyb
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 0.0.0.0 [::1] 193.187.174.69').split()
+# ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 0.0.0.0 [::1]').split()
 
 
 # Application definition
@@ -79,10 +80,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB_NAME', 'tt_v0'),
-        'USER': os.environ.get('DB_USER', 'user'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'user'),
+        'USER': os.environ.get('DB_USER', 'tt_admin'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'tt_admin'),
         'HOST': os.environ.get('DB_HOST', 'db'),
         'PORT': os.environ.get('DB_PORT', '5432'),
+
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -131,7 +135,13 @@ LOGOUT_REDIRECT_URL = '/'
 
 CSRF_TRUSTED_ORIGINS = [
     'http://193.187.174.69:8080',
-    'http://localhost:8080'
+    'http://localhost:8080',
+    'http://127.0.0.1:8080'
 ]
-CSRF_COOKIE_SECURE = False  # для разработки
-SESSION_COOKIE_SECURE = False  # для разработки
+
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+
+# Отключаем безопасные куки для локальной разработки
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
