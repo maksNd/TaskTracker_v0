@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   db:
     image: postgres:15
@@ -19,10 +17,13 @@ services:
       retries: 5
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile.localprod 
-    # image: maksnd/tasktracker:1.0 # для локальной разработки (образ загружается из docker hub)
+
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile.localprod # образ собирается локально и загружается в контейнер
+
+    image: maksnd/tt_v0:1.1 # образ загружается из docker hub
+
     container_name: web_local_tt
     command: >
       sh -c "python manage.py collectstatic --noinput &&
@@ -35,16 +36,17 @@ services:
       DEBUG: 'True'
       SECRET_KEY: 'your-secret-key-for-testing'
       # DJANGO_ALLOWED_HOSTS: '193.187.174.69'
-      DJANGO_ALLOWED_HOSTS: 'localhost 127.0.0.1'
+      # DJANGO_ALLOWED_HOSTS: '127.0.0.1'
+      DJANGO_ALLOWED_HOSTS: 'localhost'
       DB_NAME: tt_v0
       DB_USER: tt_admin
       DB_PASSWORD: tt_admin
       DB_HOST: db
       DB_PORT: 5432
     volumes:
-      - .:/app # для локальной разработки (код монтируется в контейнер)
-      - ./staticfiles:/app/staticfiles
-      - ./media:/app/media
+      # - .:/app # код монтируется в контейнер
+      - ./staticfiles:/app/staticfiles:rw
+      - ./media:/app/media:rw
 
   nginx:
     image: nginx:latest
