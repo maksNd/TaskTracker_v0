@@ -5,19 +5,30 @@
 
 {% block top_content %}
 <div class="d-flex flex-column gap-3">
-    <div class="btn-group w-100" role="group">
-        <a href="?filter=all" class="btn btn-outline-primary {% if current_filter == 'all' %}active{% endif %}">Все</a>
-        <a href="?filter=completed" class="btn btn-outline-primary {% if current_filter == 'completed' %}active{% endif %}">Выполненные</a>
-        <a href="?filter=pending" class="btn btn-outline-primary {% if current_filter == 'pending' %}active{% endif %}">Активные</a>
+    <div class="btn-group w-100" role="group" aria-label="Фильтр задач">
+        <a href="?filter=all" class="btn btn-outline-primary {% if current_filter == 'all' %}active{% endif %}" aria-current="{% if current_filter == 'all' %}page{% endif %}">Все</a>
+        <a href="?filter=completed" class="btn btn-outline-primary {% if current_filter == 'completed' %}active{% endif %}" aria-current="{% if current_filter == 'completed' %}page{% endif %}">Выполненные</a>
+        <a href="?filter=pending" class="btn btn-outline-primary {% if current_filter == 'pending' %}active{% endif %}" aria-current="{% if current_filter == 'pending' %}page{% endif %}">Активные</a>
     </div>
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and perms.tasks.add_task %}
     <form method="POST" action="{% url 'create_task' %}" class="d-flex gap-2">
         {% csrf_token %}
         {{ form.title }}
-        <button type="submit" class="btn btn-primary">Добавить</button>
+        <button type="submit" class="btn btn-primary">Добавить1</button>
     </form>
     {% endif %}
+
+    <!-- DEBUG INFO -->
+    <!-- {% if user.is_authenticated %}
+    <div class="alert alert-info">
+        <strong>Права пользователя:</strong><br>
+        Пользователь: {{ user.username }}<br>
+        can_create_task: {{ can_create_task }}<br>
+        can_edit_task: {{ can_edit_task }}
+    </div>
+    {% endif %} -->
+    <!-- END DEBUG INFO -->
 </div>
 {% endblock %}
 
@@ -28,10 +39,11 @@
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="task-card">
                     <div class="d-flex align-items-center">
+                        {% if user.is_authenticated and perms.tasks.change_task %}
                         <input type="checkbox" class="task-checkbox" data-task-id="{{ task.id }}" 
-                               {% if task.status == 'completed' %}checked{% endif %}
-                               {% if task.status == 'completed' %}disabled{% endif %}
-                               type="button">
+                               {% if task.status == 'completed' %}checked disabled{% endif %}
+                               aria-label="Отметить задачу как выполненную">
+                        {% endif %}
                         <h5 class="{% if task.status == 'completed' %}text-muted text-decoration-line-through{% endif %}">
                             {{ task.title }}
                         </h5>
@@ -52,30 +64,28 @@
         {% endfor %}
     </div>
 </div>
+{% endblock %}
 
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const checkboxes = document.querySelectorAll('.task-checkbox:not([disabled])');
+    // Получаем кнопку подтверждения
     const confirmButton = document.getElementById('confirmTasks');
     
-    // Предотвращаем стандартное поведение только для форм с чекбоксами
-    document.querySelectorAll('form').forEach(form => {
-        if (!form.querySelector('.task-checkbox')) {
-            return; // Пропускаем формы без чекбоксов
-        }
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-        });
-    });
+    // Если кнопки нет (нет прав на редактирование), выходим
+    if (!confirmButton) return;
+    
+    // Получаем все чекбоксы задач, которые не отключены
+    const checkboxes = document.querySelectorAll('.task-checkbox:not([disabled])');
+    if (!checkboxes.length) return;
     
     // Функция обновления состояния кнопки подтверждения
-    function updateConfirmButton() {
+    const updateConfirmButton = () => {
         const checkedTasks = document.querySelectorAll('.task-checkbox:checked:not([disabled])');
         confirmButton.disabled = checkedTasks.length === 0;
-    }
+    };
     
-    // Обработчик изменения состояния чекбоксов
+    // Добавляем обработчики изменения состояния чекбоксов
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', updateConfirmButton);
     });
@@ -85,57 +95,61 @@ document.addEventListener('DOMContentLoaded', function() {
         const checkedTasks = Array.from(document.querySelectorAll('.task-checkbox:checked:not([disabled])'))
             .map(checkbox => checkbox.dataset.taskId);
             
-        if (checkedTasks.length > 0) {
-            // Показываем индикатор загрузки
-            confirmButton.disabled = true;
-            confirmButton.innerHTML = 'Подождите...';
-            
-            fetch('{% url "complete_tasks" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                },
-                body: JSON.stringify({
-                    task_ids: checkedTasks
-                })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 403) {
-                        throw new Error('Ошибка доступа: у вас нет необходимых прав');
-                    } else if (response.status === 404) {
-                        throw new Error('Задача не найдена или была удалена');
-                    } else if (response.status >= 500) {
-                        throw new Error('Внутренняя ошибка сервера. Пожалуйста, попробуйте позже.');
-                    } else {
-                        throw new Error('Ошибка сети при обновлении задач');
-                    }
+        if (!checkedTasks.length) return;
+        
+        // Показываем индикатор загрузки
+        confirmButton.disabled = true;
+        confirmButton.innerHTML = 'Подождите...';
+        
+        // Получаем CSRF-токен
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (!csrfToken) {
+            alert('Ошибка безопасности: CSRF-токен не найден');
+            confirmButton.disabled = false;
+            confirmButton.innerHTML = 'Подтвердить выполнение';
+            return;
+        }
+        
+        fetch('{% url "complete_tasks" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken.value
+            },
+            body: JSON.stringify({ task_ids: checkedTasks })
+        })
+        .then(response => {
+            if (!response.ok) {
+                let errorMessage = 'Произошла ошибка при обновлении задач';
+                
+                if (response.status === 403) {
+                    errorMessage = 'Ошибка доступа: у вас нет необходимых прав';
+                } else if (response.status === 404) {
+                    errorMessage = 'Задача не найдена или была удалена';
+                } else if (response.status >= 500) {
+                    errorMessage = 'Внутренняя ошибка сервера. Пожалуйста, попробуйте позже.';
                 }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                } else {
-                    alert(data.error || 'Произошла ошибка при обновлении задач');
-                    confirmButton.disabled = false;
-                    confirmButton.innerHTML = 'Подтвердить выполнение';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                if (error.name === 'NetworkError' || error.name === 'TypeError') {
-                    alert('Ошибка сети. Пожалуйста, проверьте подключение к интернету.');
-                } else {
-                    alert(error.message || 'Произошла ошибка при обновлении задач. Пожалуйста, попробуйте еще раз.');
-                }
+                
+                throw new Error(errorMessage);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.error || 'Произошла ошибка при обновлении задач');
                 confirmButton.disabled = false;
                 confirmButton.innerHTML = 'Подтвердить выполнение';
-            });
-        }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message || 'Произошла ошибка при обновлении задач. Пожалуйста, попробуйте еще раз.');
+            confirmButton.disabled = false;
+            confirmButton.innerHTML = 'Подтвердить выполнение';
+        });
     });
 });
 </script>
-{% endblock %}
 {% endblock %} 

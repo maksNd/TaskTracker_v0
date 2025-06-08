@@ -3,12 +3,16 @@ from django.http import HttpResponse, JsonResponse
 from datetime import datetime
 from .forms import UserRegisterForm, TaskForm, LoginForm
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout, authenticate
 from .models import Task
 import json
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
+from django.core.exceptions import PermissionDenied
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Главная страница
 def test_page(request):
@@ -32,6 +36,7 @@ def test_page(request):
     return render(request, 'index.html', context)
 
 @login_required
+@permission_required('tasks.add_task', raise_exception=True)
 def create_task(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
@@ -43,10 +48,12 @@ def create_task(request):
     return redirect('test_page')
 
 @login_required
+@permission_required('tasks.change_task', raise_exception=True)
 def complete_task(request, task_id):
     try:
         task = Task.objects.get(id=task_id)
         task.status = 'completed'
+        task.completed_at = timezone.now()
         task.save()
     except Task.DoesNotExist:
         messages.error(request, 'Задача не найдена!')
@@ -54,6 +61,7 @@ def complete_task(request, task_id):
 
 @require_http_methods(["POST"])
 @login_required
+@permission_required('tasks.change_task', raise_exception=True)
 def complete_tasks(request):
     try:
         data = json.loads(request.body)

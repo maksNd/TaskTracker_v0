@@ -38,7 +38,7 @@
     </main>
 
     <!-- Нижняя навигация -->
-    <footer class="fixed-bottom bg-white shadow-sm">
+    <footer class="fixed-bottom bg-white shadow-sm py-2">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="footer-left">
@@ -51,8 +51,8 @@
                     {% endif %}
                 </div>
                 <div class="footer-right">
-                    {% if user.is_authenticated %}
-                        <button id="confirmTasks" class="btn-confirm" disabled>Подтвердить выполнение</button>
+                    {% if user.is_authenticated and perms.tasks.change_task %}
+                        <button id="confirmTasks" class="btn btn-success" disabled>Подтвердить выполнение</button>
                     {% endif %}
                     <a href="{% url 'test_page' %}" class="btn btn-link">Главная</a>
                 </div>

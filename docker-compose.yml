@@ -18,11 +18,11 @@ services:
 
   web:
 
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile.localprod # образ собирается локально и загружается в контейнер
+    build:
+      context: .
+      dockerfile: Dockerfile # образ собирается локально и загружается в контейнер
 
-    image: maksnd/tt_v0:1.1 # образ загружается из docker hub
+    # image: maksnd/tt_v0:1.1 # образ загружается из docker hub
 
     container_name: web_local_tt
     command: >
@@ -44,7 +44,7 @@ services:
       DB_HOST: db
       DB_PORT: 5432
     volumes:
-      # - .:/app # код монтируется в контейнер
+      - .:/app # код монтируется в контейнер
       - ./staticfiles:/app/staticfiles:rw
       - ./media:/app/media:rw
 
