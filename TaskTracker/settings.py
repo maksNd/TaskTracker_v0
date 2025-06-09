@@ -26,9 +26,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-))0$$=qg6w)+ai(n_8tyb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 0.0.0.0 [::1] 193.187.174.69').split()
+# ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 0.0.0.0 [::1] 95.182.98.249').split()
 # ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1 0.0.0.0 [::1]').split()
-
+ALLOWED_HOSTS = ['95.182.98.249', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -134,9 +134,10 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://193.187.174.69:8080',
-    'http://localhost:8080',
-    'http://127.0.0.1:8080'
+    'http://95.182.98.249:7070',
+    'http://95.182.98.249',
+    # 'http://localhost:7070',
+    # 'http://127.0.0.1:7070'
 ]
 
 # CSRF_COOKIE_SECURE = True

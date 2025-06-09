@@ -44,8 +44,8 @@ def create_task(request):
             task = form.save(commit=False)
             task.created_by = request.user
             task.save()
-            return redirect('test_page')
-    return redirect('test_page')
+            return redirect('index_page')
+    return redirect('index_page')
 
 @login_required
 @permission_required('tasks.change_task', raise_exception=True)
@@ -57,7 +57,7 @@ def complete_task(request, task_id):
         task.save()
     except Task.DoesNotExist:
         messages.error(request, 'Задача не найдена!')
-    return redirect('test_page')
+    return redirect('index_page')
 
 @require_http_methods(["POST"])
 @login_required
@@ -111,7 +111,7 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('test_page')
+                return redirect('index_page')
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
@@ -119,4 +119,4 @@ def login_view(request):
 # Представление для выхода
 def logout_view(request):
     logout(request)
-    return redirect('test_page') 
+    return redirect('index_page') 
