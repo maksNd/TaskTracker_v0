@@ -15,7 +15,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Главная страница
-def test_page(request):
+def index_page(request):
     # Получаем параметр фильтра из GET-запроса
     filter_type = request.GET.get('filter', 'pending')
     

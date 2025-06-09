@@ -15,7 +15,7 @@
     <form method="POST" action="{% url 'create_task' %}" class="d-flex gap-2">
         {% csrf_token %}
         {{ form.title }}
-        <button type="submit" class="btn btn-primary">Добавить1</button>
+        <button type="submit" class="btn btn-primary">Добавить</button>
     </form>
     {% endif %}
 
